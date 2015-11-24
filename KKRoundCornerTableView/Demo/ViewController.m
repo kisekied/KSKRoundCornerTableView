@@ -55,7 +55,7 @@
                                           green:arc4random() % 256 / 256.0
                                            blue:arc4random() % 256 / 256.0
                                           alpha:1.0];
-    cell.textLabel.text = [NSString stringWithFormat:@"第%ld行第%ld列", indexPath.section, indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"第%ld组第%ld行", indexPath.section + 1, indexPath.row + 1];
     
     return cell;
 }
