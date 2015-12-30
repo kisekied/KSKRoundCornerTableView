@@ -11,12 +11,16 @@
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, strong) NSMutableArray *dataArr;
+
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _dataArr = [NSMutableArray arrayWithArray:@[@"A", @"B", @"C", @"D", @"E", @"F", @"G"]];
     
     UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     tableView.delegate = self;
@@ -31,14 +35,14 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return section;
+    return section + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *kCellID = @"CELLID";
     KKRoundCornerCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
     if (!cell) {
-        cell = [[KKRoundCornerCell alloc] initWithCornerRadius:10.0f Style:UITableViewCellStyleDefault reuseIdentifier:kCellID];
+        cell = [[KKRoundCornerCell alloc] initWithCornerRadius:10.0f Style:UITableViewCellStyleDefault reuseIdentifier:kCellID fillColor:[UIColor cyanColor]];
     }
     
     if ([tableView numberOfRowsInSection:indexPath.section] == 1) {
@@ -51,13 +55,30 @@
         cell.roundCornerType = KKRoundCornerCellTypeDefault;
     }
     
-    cell.backgroundColor = [UIColor colorWithRed:arc4random() % 256 / 256.0
-                                          green:arc4random() % 256 / 256.0
-                                           blue:arc4random() % 256 / 256.0
-                                          alpha:1.0];
+    cell.fillColor = [UIColor colorWithRed:arc4random() % 256 / 256.0
+                                     green:arc4random() % 256 / 256.0
+                                      blue:arc4random() % 256 / 256.0
+                                     alpha:1.0];
     cell.textLabel.text = [NSString stringWithFormat:@"第%ld组第%ld行", indexPath.section + 1, indexPath.row + 1];
     
+    cell.textLabel.text = [_dataArr objectAtIndex:indexPath.row];
+    
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 40;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [_dataArr removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
 }
 
 

@@ -18,10 +18,18 @@ typedef NS_ENUM (NSUInteger, KKRoundCornerCellType) {
 
 @interface KKRoundCornerCell : UITableViewCell
 
-@property (nonatomic, assign) KKRoundCornerCellType roundCornerType;
+/**
+ *  cell的背景颜色
+ */
+@property (nonatomic, copy) UIColor *fillColor;
 
-@property (nonatomic, assign) CGFloat cornerRadius;
+@property (nonatomic, assign) KKRoundCornerCellType roundCornerType;    /**< 圆角类型 */
 
-- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
+@property (nonatomic, assign) CGFloat cornerRadius; /**< 圆角大小 */
+
+/**
+ *  构造方法
+ */
+- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier fillColor:(UIColor *)fillColor;
 
 @end
