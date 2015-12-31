@@ -31,18 +31,23 @@
 #pragma mark - TableView Delegate & DataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 10;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return section + 1;
+    if (section == 3) {
+        return _dataArr.count;
+    } else {
+        return section + 1;
+    }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *kCellID = @"CELLID";
     KKRoundCornerCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
     if (!cell) {
-        cell = [[KKRoundCornerCell alloc] initWithCornerRadius:10.0f Style:UITableViewCellStyleDefault reuseIdentifier:kCellID fillColor:[UIColor cyanColor]];
+        cell = [[KKRoundCornerCell alloc] initWithCornerRadius:10.0f Style:UITableViewCellStyleDefault reuseIdentifier:kCellID];
     }
     
     if ([tableView numberOfRowsInSection:indexPath.section] == 1) {
@@ -55,13 +60,16 @@
         cell.roundCornerType = KKRoundCornerCellTypeDefault;
     }
     
-    cell.fillColor = [UIColor colorWithRed:arc4random() % 256 / 256.0
-                                     green:arc4random() % 256 / 256.0
-                                      blue:arc4random() % 256 / 256.0
-                                     alpha:1.0];
+//    cell.backgroundColor = [UIColor colorWithRed:arc4random() % 256 / 256.0
+//                                     green:arc4random() % 256 / 256.0
+//                                      blue:arc4random() % 256 / 256.0
+//                                     alpha:1.0];
+    cell.backgroundColor = [UIColor cyanColor];
     cell.textLabel.text = [NSString stringWithFormat:@"第%ld组第%ld行", indexPath.section + 1, indexPath.row + 1];
     
-    cell.textLabel.text = [_dataArr objectAtIndex:indexPath.row];
+    if (indexPath.section == 3) {
+        cell.textLabel.text = [_dataArr objectAtIndex:indexPath.row];
+    }
     
     return cell;
 }
@@ -71,13 +79,18 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    if (indexPath.section == 3) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [_dataArr removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [tableView reloadData];
     }
 }
 

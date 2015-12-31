@@ -10,91 +10,71 @@
 
 @interface KKRoundCornerCell ()
 
+@property (nonatomic, strong) CAShapeLayer *shapeLayer;
+
+@property (nonatomic, copy) UIColor *fillColor;
 
 @end
 
 @implementation KKRoundCornerCell
 
-- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier fillColor:(UIColor *)fillColor {
+- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        self.opaque = NO;
-        self.backgroundColor = [UIColor clearColor];
-        [self setCornerRadius:cornerRadius];
-        [self setFillColor:fillColor];
+        [super setBackgroundColor:[UIColor clearColor]];
+        // 默认白色背景色
+        _fillColor = [UIColor whiteColor];
+        _cornerRadius = cornerRadius;
+        
+        _shapeLayer = [CAShapeLayer layer];
+        [self.layer insertSublayer:_shapeLayer atIndex:0];
     }
     
     return self;
 }
 
 
-- (void)setRoundCornerType:(KKRoundCornerCellType)roundCornerType {
-    _roundCornerType = roundCornerType;
-}
-
-
-- (void)setCornerRadius:(CGFloat)cornerRadius {
-    _cornerRadius = cornerRadius;
-}
-
 - (void)drawRect:(CGRect)rect {
-    
     [super drawRect:rect];
+    _shapeLayer.frame = self.bounds;
+    _shapeLayer.path = [self pathWithCellType:_roundCornerType].CGPath;
+}
+
+- (UIBezierPath *)pathWithCellType:(KKRoundCornerCellType)cellType {
     
+    UIBezierPath *path;
     
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextClearRect(context, rect);
-    
-    [_fillColor setFill];
-    
-    
-    CGRect cellRect = self.bounds;
-    CGFloat radius = self.cornerRadius;
-    CGContextBeginPath(context);
-    
-    switch (_roundCornerType) {
-        case KKRoundCornerCellTypeSingleRow: {
-            CGContextMoveToPoint(context, CGRectGetMinX(cellRect) + radius, CGRectGetMinY(cellRect));
-            CGContextAddArc(context, CGRectGetMaxX(cellRect) - radius, CGRectGetMinY(cellRect) + radius, radius, 3 * (float)M_PI / 2, 0, 0);
-            CGContextAddArc(context, CGRectGetMaxX(cellRect) - radius, CGRectGetMaxY(cellRect) - radius, radius, 0, (float)M_PI / 2, 0);
-            CGContextAddArc(context, CGRectGetMinX(cellRect) + radius, CGRectGetMaxY(cellRect) - radius, radius, (float)M_PI / 2, (float)M_PI, 0);
-            CGContextAddArc(context, CGRectGetMinX(cellRect) + radius, CGRectGetMinY(cellRect) + radius, radius, (float)M_PI, 3 * (float)M_PI / 2, 0);
-            CGContextClosePath(context);
-            CGContextFillPath(context);
-            break;
-        }
-            
+    switch (cellType) {
         case KKRoundCornerCellTypeTop: {
-            CGContextMoveToPoint(context, CGRectGetMinX(cellRect) + radius, CGRectGetMinY(cellRect));
-            CGContextAddArc(context, CGRectGetMaxX(cellRect) - radius, CGRectGetMinY(cellRect) + radius, radius, 3 * (float)M_PI / 2, 0, 0);
-            CGContextAddLineToPoint(context, CGRectGetMaxX(cellRect), CGRectGetMaxY(cellRect));
-            CGContextAddLineToPoint(context, CGRectGetMinX(cellRect), CGRectGetMaxY(cellRect));
-            CGContextAddArc(context, CGRectGetMinX(cellRect) + radius, CGRectGetMinY(cellRect) + radius, radius, (float)M_PI, 3 * (float)M_PI / 2, 0);
-            CGContextClosePath(context);
-            CGContextFillPath(context);
+            path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(0, _cornerRadius)];
+            [path addArcWithCenter:CGPointMake(_cornerRadius, _cornerRadius) radius:_cornerRadius startAngle:M_PI endAngle:- M_PI_2 clockwise:YES];
+            [path addLineToPoint:CGPointMake(self.bounds.size.width - _cornerRadius, 0)];
+            [path addArcWithCenter:CGPointMake(self.bounds.size.width - _cornerRadius, _cornerRadius) radius:_cornerRadius startAngle:M_PI_2 endAngle:0 clockwise:YES];
+            [path addLineToPoint:CGPointMake(self.bounds.size.width, self.bounds.size.height)];
+            [path addLineToPoint:CGPointMake(0, self.bounds.size.height)];
+            [path closePath];
             break;
         }
-            
             
         case KKRoundCornerCellTypeBottom: {
-            CGContextMoveToPoint(context, CGRectGetMinX(cellRect), CGRectGetMinY(cellRect));
-            CGContextAddLineToPoint(context, CGRectGetMaxX(cellRect), CGRectGetMinY(cellRect));
-            CGContextAddArc(context, CGRectGetMaxX(cellRect) - radius, CGRectGetMaxY(cellRect) - radius, radius, 0, (float)M_PI / 2, 0);
-            CGContextAddArc(context, CGRectGetMinX(cellRect) + radius, CGRectGetMaxY(cellRect) - radius, radius, (float)M_PI / 2, (float)M_PI, 0);
-            CGContextAddLineToPoint(context, CGRectGetMinX(cellRect), CGRectGetMinY(cellRect));
-            CGContextClosePath(context);
-            CGContextFillPath(context);
+            path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(0, self.bounds.size.height - _cornerRadius)];
+            [path addArcWithCenter:CGPointMake(_cornerRadius, self.bounds.size.height - _cornerRadius) radius:_cornerRadius startAngle:M_PI endAngle:(M_PI_2) clockwise:NO];
+            [path addLineToPoint:CGPointMake(self.bounds.size.width - _cornerRadius, self.bounds.size.height)];
+            [path addArcWithCenter:CGPointMake(self.bounds.size.width - _cornerRadius, self.bounds.size.height - _cornerRadius) radius:_cornerRadius startAngle:(M_PI_2 * 3) endAngle:0 clockwise:NO];
+            [path addLineToPoint:CGPointMake(self.bounds.size.width, 0)];
+            [path addLineToPoint:CGPointMake(0, 0)];
+            [path closePath];
             break;
         }
             
+        case KKRoundCornerCellTypeSingleRow: {
+            path = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:_cornerRadius];
+            break;
+        }
+
         case KKRoundCornerCellTypeDefault: {
-            CGContextMoveToPoint(context, CGRectGetMinX(cellRect), CGRectGetMinY(cellRect));
-            CGContextAddLineToPoint(context, CGRectGetMaxX(cellRect), CGRectGetMinY(cellRect));
-            CGContextAddLineToPoint(context, CGRectGetMaxX(cellRect), CGRectGetMaxY(cellRect));
-            CGContextAddLineToPoint(context, CGRectGetMinX(cellRect), CGRectGetMaxY(cellRect));
-            CGContextAddLineToPoint(context, CGRectGetMinX(cellRect), CGRectGetMinY(cellRect));
-            CGContextClosePath(context);
-            CGContextFillPath(context);
+            path = [UIBezierPath bezierPathWithRect:self.bounds];
             break;
         }
             
@@ -102,15 +82,21 @@
             break;
     }
     
-    
+    return path;
 }
 
-- (void)setFillColor:(UIColor *)fillColor {
-    if (_fillColor != fillColor) {
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    [self setNeedsDisplay];
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    if (_fillColor != backgroundColor) {
         _fillColor = nil;
-        _fillColor = fillColor;
-        [self setNeedsDisplay];
+        _fillColor = backgroundColor;
+        _shapeLayer.fillColor = backgroundColor.CGColor;
     }
+    
 }
 
 
