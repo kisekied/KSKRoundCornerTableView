@@ -18,13 +18,13 @@
 
 @implementation KKRoundCornerCell
 
-- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tableView:(UITableView *)tableView {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [super setBackgroundColor:[UIColor clearColor]];
         // 默认白色背景色
         _fillColor = [UIColor whiteColor];
         _cornerRadius = cornerRadius;
-        
+        _tableView = tableView;
         _shapeLayer = [CAShapeLayer layer];
         [self.layer insertSublayer:_shapeLayer atIndex:0];
     }
@@ -36,7 +36,20 @@
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
     _shapeLayer.frame = self.bounds;
-    _shapeLayer.path = [self pathWithCellType:_roundCornerType].CGPath;
+    _shapeLayer.path = [self pathWithCellType:[self roundCornerType]].CGPath;
+}
+
+- (KKRoundCornerCellType)roundCornerType {
+    NSIndexPath *indexPath = [_tableView indexPathForCell:self];
+    if ([_tableView numberOfRowsInSection:indexPath.section] == 1) {
+            return KKRoundCornerCellTypeSingleRow;
+        } else if (indexPath.row == 0) {
+            return KKRoundCornerCellTypeTop;
+        } else if (indexPath.row == [_tableView numberOfRowsInSection:indexPath.section] - 1) {
+            return KKRoundCornerCellTypeBottom;
+        } else {
+            return KKRoundCornerCellTypeDefault;
+        }
 }
 
 - (UIBezierPath *)pathWithCellType:(KKRoundCornerCellType)cellType {
@@ -86,8 +99,10 @@
 }
 
 - (void)prepareForReuse {
+    
     [super prepareForReuse];
     [self setNeedsDisplay];
+    
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
@@ -98,6 +113,7 @@
     }
     
 }
+
 
 
 @end

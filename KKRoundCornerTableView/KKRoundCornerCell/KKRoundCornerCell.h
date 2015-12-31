@@ -18,7 +18,7 @@ typedef NS_ENUM (NSUInteger, KKRoundCornerCellType) {
 
 @interface KKRoundCornerCell : UITableViewCell
 
-
+@property (nonatomic, weak) UITableView *tableView;
 
 @property (nonatomic, assign) KKRoundCornerCellType roundCornerType;    /**< 圆角类型 */
 
@@ -27,6 +27,6 @@ typedef NS_ENUM (NSUInteger, KKRoundCornerCellType) {
 /**
  *  构造方法
  */
-- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
+- (instancetype)initWithCornerRadius:(CGFloat)cornerRadius Style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tableView:(UITableView *)tableView;
 
 @end
