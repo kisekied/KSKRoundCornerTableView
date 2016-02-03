@@ -10,4 +10,6 @@
 
 @interface KSKRoundCornerCell : UITableViewCell
 
++ (instancetype)cellWithTableView:(UITableView *)tableView style:(UITableViewCellStyle)style radius:(CGFloat)radius indexPath:(NSIndexPath *)indexPath;
+
 @end

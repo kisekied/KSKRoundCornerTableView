@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "KSKRoundCornerCell.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -43,25 +43,17 @@
     
 }
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *kCellID = @"CELLID";
-//    KKRoundCornerCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-//    if (!cell) {
-//        cell = [[KKRoundCornerCell alloc] initWithCornerRadius:10.0f Style:UITableViewCellStyleDefault reuseIdentifier:kCellID tableView:tableView];
-//    }
-//    cell.backgroundColor = [UIColor colorWithRed:arc4random() % 255 / 255.0
-//                                     green:arc4random() % 255 / 255.0
-//                                      blue:arc4random() % 255 / 255.0
-//                                     alpha:1.0];
-//
-//    cell.textLabel.text = [NSString stringWithFormat:@"第%ld组第%ld行", indexPath.section + 1, indexPath.row + 1];
-//    
-//    if (indexPath.section == 3) {
-//        cell.textLabel.text = [_dataArr objectAtIndex:indexPath.row];
-//    }
-//    
-//    return cell;
-//}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    KSKRoundCornerCell *cell = [KSKRoundCornerCell cellWithTableView:tableView style:UITableViewCellStyleDefault radius:10.0f indexPath:indexPath];
+    
+    cell.backgroundColor = [UIColor colorWithRed:arc4random() % 255 / 255.0
+                                           green:arc4random() % 255 / 255.0
+                                            blue:arc4random() % 255 / 255.0
+                                           alpha:1.0];
+    NSLog(@"%@\n%@", cell, cell.backgroundColor);
+    
+    return cell;
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 40;
