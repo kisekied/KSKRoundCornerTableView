@@ -1,4 +1,4 @@
-# KKRoundCornerTableView
+# KSKRoundCornerTableView
 
 ## 实现TableViewCell每个section的圆角
 
