@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E839B6AA1C61FF9E00C7204D /* KSKRoundCornerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E839B6A91C61FF9E00C7204D /* KSKRoundCornerCell.m */; };
 		E88134E21C046FC800273AA3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E88134E11C046FC800273AA3 /* main.m */; };
 		E88134EB1C046FC800273AA3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E88134E91C046FC800273AA3 /* Main.storyboard */; };
 		E88134ED1C046FC800273AA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E88134EC1C046FC800273AA3 /* Assets.xcassets */; };
 		E88134F01C046FC800273AA3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E88134EE1C046FC800273AA3 /* LaunchScreen.storyboard */; };
 		E88134FF1C04704300273AA3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E88134F91C04704300273AA3 /* AppDelegate.m */; };
 		E88135001C04704300273AA3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E88134FB1C04704300273AA3 /* ViewController.m */; };
-		E88135011C04704300273AA3 /* KKRoundCornerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E88134FE1C04704300273AA3 /* KKRoundCornerCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E839B6A81C61FF9E00C7204D /* KSKRoundCornerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSKRoundCornerCell.h; sourceTree = "<group>"; };
+		E839B6A91C61FF9E00C7204D /* KSKRoundCornerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSKRoundCornerCell.m; sourceTree = "<group>"; };
 		E88134DD1C046FC800273AA3 /* KKRoundCornerTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KKRoundCornerTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E88134E11C046FC800273AA3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E88134EA1C046FC800273AA3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -27,8 +29,6 @@
 		E88134F91C04704300273AA3 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E88134FA1C04704300273AA3 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		E88134FB1C04704300273AA3 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		E88134FD1C04704300273AA3 /* KKRoundCornerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KKRoundCornerCell.h; sourceTree = "<group>"; };
-		E88134FE1C04704300273AA3 /* KKRoundCornerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KKRoundCornerCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +42,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E839B6A71C61FF7800C7204D /* KSKRoundCornerCell */ = {
+			isa = PBXGroup;
+			children = (
+				E839B6A81C61FF9E00C7204D /* KSKRoundCornerCell.h */,
+				E839B6A91C61FF9E00C7204D /* KSKRoundCornerCell.m */,
+			);
+			path = KSKRoundCornerCell;
+			sourceTree = "<group>";
+		};
 		E88134D41C046FC800273AA3 = {
 			isa = PBXGroup;
 			children = (
@@ -61,8 +70,8 @@
 		E88134DF1C046FC800273AA3 /* KKRoundCornerTableView */ = {
 			isa = PBXGroup;
 			children = (
+				E839B6A71C61FF7800C7204D /* KSKRoundCornerCell */,
 				E88134F71C04704300273AA3 /* Demo */,
-				E88134FC1C04704300273AA3 /* KKRoundCornerCell */,
 				E88134E91C046FC800273AA3 /* Main.storyboard */,
 				E88134EC1C046FC800273AA3 /* Assets.xcassets */,
 				E88134EE1C046FC800273AA3 /* LaunchScreen.storyboard */,
@@ -89,15 +98,6 @@
 				E88134FB1C04704300273AA3 /* ViewController.m */,
 			);
 			path = Demo;
-			sourceTree = "<group>";
-		};
-		E88134FC1C04704300273AA3 /* KKRoundCornerCell */ = {
-			isa = PBXGroup;
-			children = (
-				E88134FD1C04704300273AA3 /* KKRoundCornerCell.h */,
-				E88134FE1C04704300273AA3 /* KKRoundCornerCell.m */,
-			);
-			path = KKRoundCornerCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,9 +172,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E88135001C04704300273AA3 /* ViewController.m in Sources */,
-				E88135011C04704300273AA3 /* KKRoundCornerCell.m in Sources */,
 				E88134FF1C04704300273AA3 /* AppDelegate.m in Sources */,
 				E88134E21C046FC800273AA3 /* main.m in Sources */,
+				E839B6AA1C61FF9E00C7204D /* KSKRoundCornerCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
