@@ -8,6 +8,8 @@
 
 #import "KSKRoundCornerCell.h"
 
+#define kKSKRoundCornerCellReuseId @"KSKRoundCornerCellID"
+
 typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
     KSKRoundCornerCellTypeTop,
     KSKRoundCornerCellTypeCenter,
@@ -22,6 +24,8 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
 @property (nonatomic, assign) CGFloat radius;
 @property (nonatomic, strong) UIColor *fillColor;
 @property (nonatomic, assign) KSKRoundCornerCellType cellType;
+
+@property (nonatomic, strong) CAShapeLayer *strokeLayer;
 
 @end
 
@@ -39,12 +43,23 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
 }
 
 + (instancetype)cellWithTableView:(UITableView *)tableView style:(UITableViewCellStyle)style radius:(CGFloat)radius indexPath:(NSIndexPath *)indexPath {
-    static NSString *kCellID = @"KSKRoundCornerCell";
-    KSKRoundCornerCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
+    return [self cellWithTableView:tableView style:style radius:radius indexPath:indexPath strokeLineWidth:0 strokeColor:nil];
+}
+
++ (instancetype)cellWithTableView:(UITableView *)tableView style:(UITableViewCellStyle)style radius:(CGFloat)radius indexPath:(NSIndexPath *)indexPath strokeLineWidth:(CGFloat)lineWidth strokeColor:(UIColor *)strokeColor {
+    KSKRoundCornerCell *cell = [tableView dequeueReusableCellWithIdentifier:kKSKRoundCornerCellReuseId];
     if (!cell) {
-        cell = [[KSKRoundCornerCell alloc] initWithStyle:style reuseIdentifier:kCellID];
+        cell = [[KSKRoundCornerCell alloc] initWithStyle:style reuseIdentifier:kKSKRoundCornerCellReuseId];
         cell.radius = radius;
         cell.tableView = tableView;
+        
+        cell.contentView.backgroundColor = [UIColor clearColor];
+        cell.textLabel.backgroundColor = [UIColor clearColor];
+    }
+    
+    if (lineWidth > 0) {
+        cell.strokeLayer.lineWidth = lineWidth;
+        cell.strokeLayer.strokeColor = strokeColor ? strokeColor.CGColor : [UIColor grayColor].CGColor;
     }
     
     cell.indexPath = indexPath;
@@ -52,8 +67,12 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
 }
 
 - (void)setFrame:(CGRect)frame {
+    
     [super setFrame:frame];
-    ((CAShapeLayer *)(self.layer)).path = [self bezierPathWithCellType:[self cellType] width:frame.size.width height:frame.size.height].CGPath;
+    CAShapeLayer *shapeLayer = ((CAShapeLayer *)(self.layer));
+    shapeLayer.path = [self bezierPathWithCellType:[self cellType] width:frame.size.width height:frame.size.height].CGPath;
+    self.strokeLayer.path = [self strokePathWithCellType:[self cellType] width:frame.size.width height:frame.size.height].CGPath;
+    
 }
 
 - (void)setIndexPath:(NSIndexPath *)indexPath {
@@ -87,8 +106,6 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
 
 
 - (void)autoSetCellType {
-    NSLog(@"_tableView === %@", _tableView);
-    NSLog(@"%ld", [_tableView numberOfRowsInSection:self.indexPath.section]);
     if ([_tableView numberOfRowsInSection:self.indexPath.section] == 1) {
         self.cellType = KSKRoundCornerCellTypeAll;
     } else if (self.indexPath.row == 0) {
@@ -100,11 +117,14 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
     }
 }
 
+#pragma mark - BezierPath
+
 - (UIBezierPath *)bezierPathWithCellType:(KSKRoundCornerCellType)cellType width:(CGFloat)width height:(CGFloat)height {
     UIBezierPath *bezierPath;
     switch (self.cellType) {
         case KSKRoundCornerCellTypeAll: {
             bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, width, height) cornerRadius:self.radius];
+            
             break;
         }
         case KSKRoundCornerCellTypeTop: {
@@ -115,6 +135,7 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
             [bezierPath addArcWithCenter:CGPointMake(width - self.radius, self.radius) radius:self.radius startAngle:-M_PI_2 endAngle:0 clockwise:YES];
             [bezierPath addLineToPoint:CGPointMake(width, height)];
             [bezierPath addLineToPoint:CGPointMake(0, height)];
+            [bezierPath addLineToPoint:CGPointMake(0, self.radius)];
             [bezierPath closePath];
             break;
         }
@@ -126,6 +147,7 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
             [bezierPath addArcWithCenter:CGPointMake(width - self.radius, height - self.radius) radius:self.radius startAngle:M_PI_2 endAngle:0 clockwise:NO];
             [bezierPath addLineToPoint:CGPointMake(width, 0)];
             [bezierPath addLineToPoint:CGPointMake(0, 0)];
+            [bezierPath addLineToPoint:CGPointMake(0, height - self.radius)];
             [bezierPath closePath];
             break;
         }
@@ -137,6 +159,67 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
             break;
     }
     return bezierPath;
+}
+
+- (UIBezierPath *)strokePathWithCellType:(KSKRoundCornerCellType)cellType width:(CGFloat)width height:(CGFloat)height {
+    UIBezierPath *bezierPath;
+    
+    CGFloat lineWidth = self.strokeLayer.lineWidth;
+    if (lineWidth <= 0) {
+        return nil;
+    }
+    
+    switch (self.cellType) {
+        case KSKRoundCornerCellTypeAll: {
+            bezierPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(lineWidth / 2.f, lineWidth / 2.f, width - lineWidth, height - lineWidth) cornerRadius:(self.radius - lineWidth / 2.f)];
+            
+            break;
+        }
+        case KSKRoundCornerCellTypeTop: {
+            bezierPath = [UIBezierPath bezierPath];
+            [bezierPath moveToPoint:CGPointMake(lineWidth / 2.f, height)];
+            [bezierPath addLineToPoint:CGPointMake(lineWidth / 2.f, self.radius)];
+            [bezierPath addArcWithCenter:CGPointMake(self.radius, self.radius) radius:(self.radius - lineWidth / 2.f) startAngle:M_PI endAngle:-M_PI_2 clockwise:YES];
+            [bezierPath addLineToPoint:CGPointMake(width - self.radius, lineWidth / 2.f)];
+            [bezierPath addArcWithCenter:CGPointMake(width - self.radius, self.radius) radius:(self.radius - lineWidth / 2.f) startAngle:-M_PI_2 endAngle:0 clockwise:YES];
+            [bezierPath addLineToPoint:CGPointMake(width - lineWidth / 2.f, height)];
+            
+            break;
+        }
+        case KSKRoundCornerCellTypeBootom: {
+            bezierPath = [UIBezierPath bezierPath];
+            [bezierPath moveToPoint:CGPointMake(lineWidth / 2.f, 0)];
+            [bezierPath addLineToPoint:CGPointMake(lineWidth / 2.f, height - self.radius)];
+            [bezierPath addArcWithCenter:CGPointMake(self.radius, height - self.radius) radius:(self.radius - lineWidth / 2.f) startAngle:M_PI endAngle:M_PI_2 clockwise:NO];
+            [bezierPath addLineToPoint:CGPointMake(width - self.radius, height - lineWidth / 2.f)];
+            [bezierPath addArcWithCenter:CGPointMake(width - self.radius, height - self.radius) radius:(self.radius - lineWidth / 2.f) startAngle:M_PI_2 endAngle:0 clockwise:NO];
+            [bezierPath addLineToPoint:CGPointMake(width - lineWidth / 2.f, 0)];
+            break;
+        }
+        case KSKRoundCornerCellTypeCenter: {
+            bezierPath = [UIBezierPath bezierPath];
+            [bezierPath moveToPoint:CGPointMake(lineWidth / 2.f, 0)];
+            [bezierPath addLineToPoint:CGPointMake(lineWidth / 2.f, height)];
+            
+            [bezierPath moveToPoint:CGPointMake(width - lineWidth / 2.f, 0)];
+            [bezierPath addLineToPoint:CGPointMake(width - lineWidth / 2.f, height)];
+            break;
+        }
+        default:
+            break;
+    }
+    return bezierPath;
+
+}
+
+
+- (CAShapeLayer *)strokeLayer {
+    if (!_strokeLayer) {
+        _strokeLayer = [CAShapeLayer layer];
+        _strokeLayer.fillColor = [UIColor clearColor].CGColor;
+        [self.layer addSublayer:_strokeLayer];
+    }
+    return _strokeLayer;
 }
 
 @end
