@@ -55,6 +55,9 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
         
         cell.contentView.backgroundColor = [UIColor clearColor];
         cell.textLabel.backgroundColor = [UIColor clearColor];
+        
+        // cell默认颜色为白色
+        cell.backgroundColor = [UIColor whiteColor];
     }
     
     if (lineWidth > 0) {

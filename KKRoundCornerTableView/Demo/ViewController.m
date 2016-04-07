@@ -48,6 +48,8 @@
 
     KSKRoundCornerCell *cell = [KSKRoundCornerCell cellWithTableView:tableView style:UITableViewCellStyleDefault radius:10.0f indexPath:indexPath strokeLineWidth:2 strokeColor:nil];
     
+
+    
     cell.backgroundColor = [UIColor colorWithRed:arc4random() % 255 / 255.0
                                            green:arc4random() % 255 / 255.0
                                             blue:arc4random() % 255 / 255.0
