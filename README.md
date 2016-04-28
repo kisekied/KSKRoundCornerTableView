@@ -19,6 +19,18 @@
 ```
 
 #Change history
+2016.4.28 Fix big: 修复了继承后的子类可能出现的问题,若需在自定义子类中添加控件，请覆写子类中的 ` - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier `方法
+
+
+```
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        [self addSubviews];
+    }
+    return self;
+}
+```
+
 2016.4.7 Fix bug:设置cell的默认颜色为白色
 
 2016.4.6 增加边框功能
