@@ -38,34 +38,52 @@ typedef NS_ENUM(NSInteger, KSKRoundCornerCellType) {
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [super setBackgroundColor:[UIColor clearColor]];
+        
     }
     return self;
 }
+
+- (instancetype)initWithTableView:(UITableView *)tableView style:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier radius:(CGFloat)radius indexPath:(NSIndexPath *)indexPath strokeLineWidth:(CGFloat)lineWidth strokeColor:(UIColor *)strokeColor {
+    
+    if (self = [self initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        self = [self initWithStyle:style reuseIdentifier:kKSKRoundCornerCellReuseId];
+        self.radius = radius;
+        self.tableView = tableView;
+
+        self.contentView.backgroundColor = [UIColor clearColor];
+        self.textLabel.backgroundColor = [UIColor clearColor];
+
+        // cell默认颜色为白色
+        self.backgroundColor = [UIColor whiteColor];
+
+        if (lineWidth > 0) {
+            self.strokeLayer.lineWidth = lineWidth;
+            self.strokeLayer.strokeColor = strokeColor ? strokeColor.CGColor : [UIColor grayColor].CGColor;
+        }
+        
+        self.indexPath = indexPath;
+    }
+    
+ 
+    return self;
+}
+
 
 + (instancetype)cellWithTableView:(UITableView *)tableView style:(UITableViewCellStyle)style radius:(CGFloat)radius indexPath:(NSIndexPath *)indexPath {
     return [self cellWithTableView:tableView style:style radius:radius indexPath:indexPath strokeLineWidth:0 strokeColor:nil];
 }
 
+
 + (instancetype)cellWithTableView:(UITableView *)tableView style:(UITableViewCellStyle)style radius:(CGFloat)radius indexPath:(NSIndexPath *)indexPath strokeLineWidth:(CGFloat)lineWidth strokeColor:(UIColor *)strokeColor {
+    
     KSKRoundCornerCell *cell = [tableView dequeueReusableCellWithIdentifier:kKSKRoundCornerCellReuseId];
+    
     if (!cell) {
-        cell = [[KSKRoundCornerCell alloc] initWithStyle:style reuseIdentifier:kKSKRoundCornerCellReuseId];
-        cell.radius = radius;
-        cell.tableView = tableView;
-        
-        cell.contentView.backgroundColor = [UIColor clearColor];
-        cell.textLabel.backgroundColor = [UIColor clearColor];
-        
-        // cell默认颜色为白色
-        cell.backgroundColor = [UIColor whiteColor];
+        cell = [[self alloc] initWithTableView:tableView style:style reuseIdentifier:kKSKRoundCornerCellReuseId radius:radius indexPath:indexPath strokeLineWidth:lineWidth strokeColor:strokeColor];
     }
     
-    if (lineWidth > 0) {
-        cell.strokeLayer.lineWidth = lineWidth;
-        cell.strokeLayer.strokeColor = strokeColor ? strokeColor.CGColor : [UIColor grayColor].CGColor;
-    }
     
-    cell.indexPath = indexPath;
+    
     return cell;
 }
 
