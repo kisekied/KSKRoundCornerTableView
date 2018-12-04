@@ -1,5 +1,7 @@
 # KSKRoundCornerTableView
 
+## [swift version](https://github.com/kisekied/HLRoundCornerTableView)
+
 ## 实现TableViewCell每个section的圆角
 
 ![效果预览](https://github.com/kisekied/KKRoundCornerTableView/blob/master/ScreenShot.png?raw=true)
